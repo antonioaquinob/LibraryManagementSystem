@@ -1,4 +1,4 @@
-
+using Microsoft.EntityFrameworkCore;
 namespace LibraryManagementSystem.API
 {
     public class Program
@@ -6,6 +6,10 @@ namespace LibraryManagementSystem.API
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+            
+            // Add service to DI
+            builder.Services.AddDbContext<Data.LibraryDbContext>(options =>
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
             // Add services to the container.
 
