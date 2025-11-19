@@ -10,9 +10,9 @@ namespace LibraryManagementSystem.Core.DTOs
     {
         public string Title { get; set; } = string.Empty;
         public string Author { get; set; } = string.Empty;
+        public string Category { get; set; } = string.Empty;
         public string ISBN { get; set; } = string.Empty;
-        public int PublishedYear { get; set; }
-        public int PublishedMonth { get; set; }
+        public DateTime PublishDate { get; set; }
         public int QuantityAvailable { get; set; }
     }
 }

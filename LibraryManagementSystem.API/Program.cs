@@ -1,4 +1,7 @@
 using Microsoft.EntityFrameworkCore;
+using LibraryManagementSystem.API.Repositories;
+using LibraryManagementSystem.API.Services;
+using LibraryManagementSystem.Core.Interfaces;
 namespace LibraryManagementSystem.API
 {
     public class Program
@@ -12,6 +15,8 @@ namespace LibraryManagementSystem.API
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
             // Add services to the container.
+            builder.Services.AddScoped<IBookRepository, BookRepository>();
+            builder.Services.AddScoped<IBookService, BookService>();
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

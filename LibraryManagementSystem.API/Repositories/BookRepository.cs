@@ -2,10 +2,11 @@
 using LibraryManagementSystem.Core.Entities;
 using Microsoft.EntityFrameworkCore;
 using LibraryManagementSystem.API.Data;
-using System.Runtime.InteropServices;
+using LibraryManagementSystem.Core.DTOs;
+
 namespace LibraryManagementSystem.API.Repositories
 {
-    public class BookRepository: IBookRepository
+    public class BookRepository : IBookRepository
     {
         private readonly LibraryDbContext _context;
         public BookRepository(LibraryDbContext context)
@@ -17,33 +18,44 @@ namespace LibraryManagementSystem.API.Repositories
         {
             return await _context.Books.ToListAsync();
         }
+
         public async Task<Book?> GetByIdAsync(int bookId)
         {
             return await _context.Books.FindAsync(bookId);
         }
-        public async Task<Book> AddAsync(Book book)
+
+        public Task<Book> AddAsync(CreateBookDto bookDto)
         {
+            var book = new Book
+            {
+                Title = bookDto.Title,
+                Author = bookDto.Author,
+                Category = bookDto.Category,
+                ISBN = bookDto.ISBN,
+                PublishDate = bookDto.PublishDate,
+                QuantityAvailable = bookDto.QuantityAvailable
+            };
+
             _context.Books.Add(book);
-            await _context.SaveChangesAsync();
-            return book;
+            return Task.FromResult(book);
         }
-        public async Task<Book> UpdateAsync(Book book)
+
+        public Task<Book> UpdateAsync(Book book)
         {
             _context.Books.Update(book);
-            await _context.SaveChangesAsync();
-            return book;
+            return Task.FromResult(book);
         }
+
         public async Task<bool> DeleteAsync(Book book)
         {
             var findBook = await _context.Books.FindAsync(book.BookId);
-            if (findBook != null)
+            if (findBook == null)
                 return false;
 
-            _context.Books.Remove(book);
-            await _context.SaveChangesAsync();
+            _context.Books.Remove(findBook);
             return true;
-
         }
+
         public async Task SaveChangesAsync()
         {
             await _context.SaveChangesAsync();
