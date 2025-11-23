@@ -19,7 +19,7 @@ namespace LibraryManagementSystem.API.Repositories
             return await _context.Books.ToListAsync();
         }
 
-        public async Task<Book?> GetByIdAsync(int bookId)
+        public async Task<Book?> GetBookByIdAsync(int bookId)
         {
             return await _context.Books.FindAsync(bookId);
         }

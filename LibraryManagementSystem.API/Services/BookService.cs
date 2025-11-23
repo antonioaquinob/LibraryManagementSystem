@@ -1,4 +1,5 @@
 ﻿using LibraryManagementSystem.API.Data;
+using LibraryManagementSystem.API.Repositories;
 using LibraryManagementSystem.Core.DTOs;
 using LibraryManagementSystem.Core.Entities;
 using LibraryManagementSystem.Core.Interfaces;
@@ -9,10 +10,11 @@ namespace LibraryManagementSystem.API.Services
     public class BookService : IBookService
     {
         private readonly LibraryDbContext _context;
-
-        public BookService(LibraryDbContext context)
+        private readonly IBookRepository _bookRepository;
+        public BookService(LibraryDbContext context, IBookRepository bookRepository)
         {
             _context = context;
+            _bookRepository = bookRepository;
         }
 
         public async Task<Book> CreateBookAsync(CreateBookDto dto)
@@ -27,14 +29,14 @@ namespace LibraryManagementSystem.API.Services
                 QuantityAvailable = dto.QuantityAvailable
             };
 
-            _context.Books.Add(book);
-            await _context.SaveChangesAsync();
+            await _bookRepository.AddAsync(dto);
+            await _bookRepository.SaveChangesAsync();
             return book;
         }
 
-        public async Task<Book?> UpdateBookAsync(int id, BookDto dto)
+        public async Task<Book?> UpdateBookAsync(int id, UpdateBookDto dto)
         {
-            var book = await _context.Books.FindAsync(id);
+            var book = await _bookRepository.GetBookByIdAsync(id);
             if (book == null)
                 return null;
 
@@ -46,29 +48,30 @@ namespace LibraryManagementSystem.API.Services
             book.PublishDate = dto.PublishDate;
             book.QuantityAvailable = dto.QuantityAvailable;
 
-            await _context.SaveChangesAsync();
+            await _bookRepository.UpdateAsync(book);
+            await _bookRepository.SaveChangesAsync();
             return book;
         }
 
         public async Task<bool> DeleteBookAsync(int id)
         {
-            var book = await _context.Books.FindAsync(id);
+            var book = await _bookRepository.GetBookByIdAsync(id);
             if (book == null)
                 return false;
 
-            _context.Books.Remove(book);
-            await _context.SaveChangesAsync();
+            await _bookRepository.DeleteAsync(book);
+            await _bookRepository.SaveChangesAsync();
             return true;
         }
 
         public async Task<Book?> GetBookByIdAsync(int id)
         {
-            return await _context.Books.FindAsync(id);
+            return await _bookRepository.GetBookByIdAsync(id);
         }
 
         public async Task<IEnumerable<Book>> GetAllBooksAsync()
         {
-            return await _context.Books.ToListAsync();
+            return await _bookRepository.GetAllAsync();
         }
     }
 }
