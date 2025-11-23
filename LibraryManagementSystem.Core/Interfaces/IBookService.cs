@@ -9,6 +9,6 @@ namespace LibraryManagementSystem.Core.Interfaces
         Task<Book?> UpdateBookAsync(int id, UpdateBookDto dto);
         Task<bool> DeleteBookAsync(int id);
         Task<Book?> GetBookByIdAsync(int id);
-        Task<IEnumerable<Book>> GetAllBooksAsync();
+        Task<IEnumerable<Book>> GetAllBooksAsync(string? search = null, string? sortBy = null, bool sortDesc = false);
     }
 }
