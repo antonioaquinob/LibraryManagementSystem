@@ -5,13 +5,13 @@ using LibraryManagementSystem.Core.Entities;
 
 namespace LibraryManagementSystem.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/books")]
     [ApiController]
-    public class BookController : ControllerBase
+    public class BooksController : ControllerBase
     {
         private readonly IBookService _bookService;
 
-        public BookController(IBookService bookService)
+        public BooksController(IBookService bookService)
         {
             _bookService = bookService;
         }
@@ -33,19 +33,16 @@ namespace LibraryManagementSystem.API.Controllers
         public async Task<IActionResult> CreateBook([FromBody] CreateBookDto dto)
         {
             var book = await _bookService.CreateBookAsync(dto);
-            return Ok(book);
+            return CreatedAtAction(nameof(GetBookById), new { id = book.BookId }, book);
         }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateBook(int id, [FromBody] BookDto dto)
         {
             var updated = await _bookService.UpdateBookAsync(id, dto);
-            if (updated == null)
-                return NotFound();
 
-            return Ok(updated);
+            return updated == null ? NotFound() : Ok(updated);
         }
-
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteBook(int id)
