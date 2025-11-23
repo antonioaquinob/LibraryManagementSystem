@@ -10,7 +10,7 @@ namespace LibraryManagementSystem.Core.Interfaces
     public interface IBookRepository
     {
         Task<IEnumerable<Book>> GetAllAsync();
-        Task<Book?> GetByIdAsync(int bookId);
+        Task<Book?> GetBookByIdAsync(int bookId);
         Task<Book> AddAsync(CreateBookDto book);
         Task<Book> UpdateAsync(Book book);
         Task<bool> DeleteAsync(Book book);

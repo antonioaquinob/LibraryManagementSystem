@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -7,12 +8,12 @@ using System.Threading.Tasks;
 
 namespace LibraryManagementSystem.Core.DTOs
 {
-    public class CreateBookDto
+    public class UpdateBookDto
     {
         [Required]
         [MaxLength(255)]
         public string Title { get; set; } = string.Empty;
-        
+
         [Required]
         [MaxLength(255)]
         public string Author { get; set; } = string.Empty;

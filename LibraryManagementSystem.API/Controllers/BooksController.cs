@@ -32,13 +32,19 @@ namespace LibraryManagementSystem.API.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateBook([FromBody] CreateBookDto dto)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var book = await _bookService.CreateBookAsync(dto);
             return CreatedAtAction(nameof(GetBookById), new { id = book.BookId }, book);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateBook(int id, [FromBody] BookDto dto)
+        public async Task<IActionResult> UpdateBook(int id, UpdateBookDto dto)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var updated = await _bookService.UpdateBookAsync(id, dto);
 
             return updated == null ? NotFound() : Ok(updated);
