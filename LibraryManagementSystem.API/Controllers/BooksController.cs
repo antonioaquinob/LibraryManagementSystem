@@ -17,11 +17,15 @@ namespace LibraryManagementSystem.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllBooks()
+        public async Task<IActionResult> GetAllBooks(
+                        [FromQuery] string? search,
+                        [FromQuery] string? sortBy,
+                        [FromQuery] bool sortDesc = false)
         {
-            var books = await _bookService.GetAllBooksAsync();
+            var books = await _bookService.GetAllBooksAsync(search, sortBy, sortDesc);
             return Ok(books);
         }
+
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetBookById(int id)
@@ -35,8 +39,16 @@ namespace LibraryManagementSystem.API.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var book = await _bookService.CreateBookAsync(dto);
-            return CreatedAtAction(nameof(GetBookById), new { id = book.BookId }, book);
+            try
+            {
+                var book = await _bookService.CreateBookAsync(dto);
+                return CreatedAtAction(nameof(GetBookById), new { id = book.BookId }, book);
+            }
+            catch(Exception ex)
+            {
+                return StatusCode(500, "An error occurred while creating the book.");
+            }
+           
         }
 
         [HttpPut("{id}")]
@@ -45,16 +57,29 @@ namespace LibraryManagementSystem.API.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var updated = await _bookService.UpdateBookAsync(id, dto);
-
-            return updated == null ? NotFound() : Ok(updated);
+            try
+            {
+                var updated = await _bookService.UpdateBookAsync(id, dto);
+                return updated == null ? NotFound() : Ok(updated);
+            }
+            catch(Exception ex)
+            {
+                return StatusCode(500, "An error occurred while updating the book.");
+            }
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteBook(int id)
         {
-            var success = await _bookService.DeleteBookAsync(id);
-            return success ? NoContent() : NotFound();
+            try
+            {
+                var success = await _bookService.DeleteBookAsync(id);
+                return success ? NoContent() : NotFound();
+            }
+            catch(Exception ex)
+            {
+                return StatusCode(500, "An error occurred while deleting the book.");
+            }
         }
     }
 }
