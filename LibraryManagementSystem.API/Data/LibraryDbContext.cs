@@ -8,5 +8,6 @@ namespace LibraryManagementSystem.API.Data
         {
         }
         public DbSet<Book> Books { get; set; } = null!;
+        public DbSet<BookTransaction> BookTransactions { get; set; } = null!;
     }
 }
