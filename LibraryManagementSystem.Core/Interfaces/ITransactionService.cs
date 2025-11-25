@@ -10,9 +10,9 @@ namespace LibraryManagementSystem.Core.Interfaces
 {
     public interface ITransactionService
     {
-        Task<BookTransaction> BorrowBookAsync(CreateTransactionDto dto);
-        Task<BookTransaction?> ReturnBookAsync(ReturnTransactionDto dto);
+        Task<TransactionResponseDto> BorrowBookAsync(CreateTransactionDto dto);
+        Task<TransactionResponseDto?> ReturnBookAsync(ReturnTransactionDto dto);
+        Task<BookTransaction?> GetTransactionByIdAsync(int id);
         Task<IEnumerable<BookTransaction>> GetAllTransactionsAsync();
-        Task<BookTransaction?> GetTransactionByIdAsync(int transactionId);
     }
 }
