@@ -45,6 +45,7 @@ namespace LibraryManagementSystem.API.Controllers
         }
 
         // POST: api/users/login
+        [AllowAnonymous]
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDto dto)
         {

@@ -3,16 +3,21 @@ using LibraryManagementSystem.Core.Entities;
 using LibraryManagementSystem.Core.Interfaces;
 using System.Threading.Tasks;
 using BCrypt.Net;
-
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 namespace LibraryManagementSystem.API.Services
 {
     public class UserService : IUserService
     {
         private readonly IUserRepository _userRepo;
+        private readonly IConfiguration _configuration;
 
-        public UserService(IUserRepository userRepo)
+        public UserService(IUserRepository userRepo, IConfiguration configuration)
         {
             _userRepo = userRepo;
+            _configuration = configuration;
         }
 
         public async Task<User?> GetUserByIdAsync(int id)
@@ -43,14 +48,34 @@ namespace LibraryManagementSystem.API.Services
             return user;
         }
 
-        public async Task<User?> AuthenticateUserAsync(LoginDto dto)
+        public async Task<string?> AuthenticateUserAsync(LoginDto dto)
         {
             var user = await _userRepo.GetByUsernameAsync(dto.Username);
-            if (user == null)
-                return null;
+            if (user == null) return null;
 
-            bool isPasswordMatches = BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash);
-            return isPasswordMatches ? user : null;
+            bool isPasswordValid = BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash);
+            if (!isPasswordValid) return null;
+
+            // Create JWT token
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.UTF8.GetBytes(_configuration["JwtSettings:Key"]);
+
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new[]
+                {
+            new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
+            new Claim(ClaimTypes.Name, user.Username),
+            new Claim(ClaimTypes.Role, user.Role)
+        }),
+                Expires = DateTime.UtcNow.AddHours(1),
+                Issuer = _configuration["JwtSettings:Issuer"],
+                Audience = _configuration["JwtSettings:Audience"],
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            };
+
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            return tokenHandler.WriteToken(token);
         }
 
         public async Task<IEnumerable<User>> GetAllUsersAsync()

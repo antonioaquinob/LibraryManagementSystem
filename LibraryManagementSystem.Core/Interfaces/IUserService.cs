@@ -14,6 +14,6 @@ namespace LibraryManagementSystem.Core.Interfaces
         Task<User> RegisterUserAsync(RegisterUserDto dto);
         Task<User?> UpdateUserAsync(int id, UpdateUserDto dto);
         Task<bool> DeleteUserAsync(int id);
-        Task<User?> AuthenticateUserAsync(LoginDto dto); // returns JWT token
+        Task<string?> AuthenticateUserAsync(LoginDto dto); // returns JWT token
     }
 }
