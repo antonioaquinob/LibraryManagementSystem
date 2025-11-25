@@ -19,7 +19,7 @@ namespace LibraryManagementSystem.API.Repositories
             return await _context.BookTransactions.ToListAsync();
         }
 
-        public async Task<BookTransaction?> GetByIdAsync(int id)
+        public async Task<BookTransaction?> GetTransactionByIdAsync(int id)
         {
             return await _context.BookTransactions
                 .FirstOrDefaultAsync(t => t.TransactionId == id);
@@ -32,18 +32,10 @@ namespace LibraryManagementSystem.API.Repositories
             return transaction;
         }
 
-        public async Task<BookTransaction?> ReturnBookAsync(int transactionId, DateTime returnDate)
+        public async Task UpdateTransactionAsync(BookTransaction transaction)
         {
-            var transaction = await _context.BookTransactions
-                .FirstOrDefaultAsync(t => t.TransactionId == transactionId);
-
-            if (transaction == null)
-                return null;
-
-            transaction.ReturnDate = returnDate;
-
-            await _context.SaveChangesAsync();
-            return transaction;
+            _context.BookTransactions.Update(transaction);
+            await Task.CompletedTask; // EF tracks changes, update is optional
         }
 
         public async Task SaveChangesAsync()

@@ -34,6 +34,7 @@ namespace LibraryManagementSystem.API.Controllers
         }
 
         // POST: api/users/register
+        [AllowAnonymous]
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterUserDto dto)
         {

@@ -16,6 +16,7 @@ namespace LibraryManagementSystem.API.Controllers
             _bookService = bookService;
         }
 
+        // /api/books?search=Legend of sleepy hollow&sortBy=title&sortDesc=false
         [HttpGet]
         public async Task<IActionResult> GetAllBooks(
                         [FromQuery] string? search,
@@ -26,13 +27,15 @@ namespace LibraryManagementSystem.API.Controllers
             return Ok(books);
         }
 
-
+        // /api/books/2
         [HttpGet("{id}")]
         public async Task<IActionResult> GetBookById(int id)
         {
             var book = await _bookService.GetBookByIdAsync(id);
             return book == null ? NotFound() : Ok(book);
         }
+
+        // /api/books
         [HttpPost]
         public async Task<IActionResult> CreateBook([FromBody] CreateBookDto dto)
         {
@@ -51,6 +54,7 @@ namespace LibraryManagementSystem.API.Controllers
            
         }
 
+        // /api/books/2
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateBook(int id, UpdateBookDto dto)
         {
@@ -68,6 +72,7 @@ namespace LibraryManagementSystem.API.Controllers
             }
         }
 
+        // /api/books/2
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteBook(int id)
         {

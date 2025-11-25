@@ -91,6 +91,7 @@ namespace LibraryManagementSystem.API.Services
 
             user.Username = dto.Username;
             user.Email= dto.Email;
+            user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password);
 
             await _userRepo.UpdateAsync(user);
             await _userRepo.SaveChangesAsync();
