@@ -19,6 +19,11 @@ namespace LibraryManagementSystem.API
             var builder = WebApplication.CreateBuilder(args);
 
             // ============================
+            // DockerSetup
+            // ============================
+            builder.WebHost.UseUrls("http://+:80"); // Make Kestrel listen on all IPs, port 80 (Docker mapped port
+
+            // ============================
             // DATABASE
             // ============================
             builder.Services.AddDbContext<Data.LibraryDbContext>(options =>
@@ -70,13 +75,17 @@ namespace LibraryManagementSystem.API
 
             var app = builder.Build();
 
-            if (app.Environment.IsDevelopment())
-            {
-                app.UseSwagger();
-                app.UseSwaggerUI();
-            }
+            //if (app.Environment.IsDevelopment())
+            //{
+            //    app.UseSwagger();
+            //    app.UseSwaggerUI();
+            //}
 
-            app.UseHttpsRedirection();
+            // Instead of checking for development:
+            app.UseSwagger();
+            app.UseSwaggerUI();
+
+            //app.UseHttpsRedirection();
 
             app.UseAuthentication();
             app.UseAuthorization();
